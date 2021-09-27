@@ -38,6 +38,7 @@ export class MeasureSoilComponent implements OnInit, AfterViewInit {
   public measureView: 'before-measuring' | 'measuring' | 'after-measuring' = 'before-measuring';
   private interval;
   public soilData: SoilMoisture;
+  public deviceConnected = false;
 
   ngOnInit(): void { }
 
@@ -127,6 +128,8 @@ export class MeasureSoilComponent implements OnInit, AfterViewInit {
           console.log(`Device ${device.name} is disconnected.`);
         }
 
+      this.deviceConnected = true;
+
       return sensorMoisturePercantage;
 
     } catch (e) {
@@ -146,7 +149,7 @@ export class MeasureSoilComponent implements OnInit, AfterViewInit {
     try {
       const port = await (window.navigator as any).serial.requestPort({filters: [filter]});
       // Continue connecting to port 9600.
-      await port.open({ baudRate: 9600 });
+      await port.open({baudRate: 9600});
 
       const textDecoder = new TextDecoderStream();
       const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
@@ -157,7 +160,7 @@ export class MeasureSoilComponent implements OnInit, AfterViewInit {
 
       // Listen to data coming from the serial device.
       while (true) {
-        const { value, done } = await reader.read();
+        const {value, done} = await reader.read();
 
         if (done) {
           reader.releaseLock();
@@ -166,12 +169,13 @@ export class MeasureSoilComponent implements OnInit, AfterViewInit {
 
         if (value !== '' || !isNaN(value)) {
           // The value length between 4 and 6 is quite precise
-          if (value.length >= 4 && value.length <= 6){
+          if (value.length >= 4 && value.length <= 6) {
             sensorMoisturePercantage = +value;
             if (!isNaN(sensorMoisturePercantage)) {
               reader.cancel();
               // When reader is cancelled an error will be thrown as designed which can be ignored
-              await readableStreamClosed.catch(() => { /* Ignore the error*/  });
+              await readableStreamClosed.catch(() => { /* Ignore the error*/
+              });
               await port.close();
 
               return sensorMoisturePercantage;
@@ -193,10 +197,12 @@ export class MeasureSoilComponent implements OnInit, AfterViewInit {
             //return sensorValue;
           }
         }*/
+
+        this.deviceConnected = true;
       }
     } catch (e) {
       // Permission to access a device was denied implicitly or explicitly by the user.
-      window.alert('Failed to connect to sensor via USB') ;
+      window.alert('Failed to connect to sensor via USB');
     }
   }
 
@@ -242,7 +248,7 @@ export class MeasureSoilComponent implements OnInit, AfterViewInit {
     this.router.navigate(['advice']).then(r => {});
   }
 
-  onMeasureSoil() {
+  onMeasureNow() {
 
   }
 }

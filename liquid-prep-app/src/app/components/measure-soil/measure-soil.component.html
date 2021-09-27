@@ -36,17 +36,14 @@
             </div>
           </div>
 
-          <div class="swiper-slide">
+          <div *ngIf="deviceConnected; else connectNewDevice"  class="swiper-slide">
             <div class="container" fxLayout="column" fxFlexFill fxLayoutAlign="end center" >
               <div class="text-area"  fxLayout="column" fxFlexFill fxLayoutAlign="center center" >
                 <p class="title" textWrap="true">Step 3:</p>
-                <p class="description" textWrap="true">Connect to sensor</p>
-                <button mat-flat-button class="c-btn" (click)="onSensorConnect('usb')">
-                  <mat-icon>usb</mat-icon> Connect with USB
+                <button mat-flat-button class="m-btn" (click)="onMeasureNow()">
+                  MEASURE NOW
                 </button>
-                <button mat-flat-button class="c-btn" (click)="onSensorConnect('ble')">
-                  <mat-icon>bluetooth</mat-icon> Connect with Bluetooth
-                </button>
+
               </div>
               <img mat-card-image class="cardImg" src="/assets/connect-to-sensor.png" alt="Connect to Sensor" />
             </div>
@@ -54,6 +51,24 @@
 
     </swiper>
   </div>
+
+  <ng-template #connectNewDevice>
+    <div class="swiper-slide">
+      <div class="container" fxLayout="column" fxFlexFill fxLayoutAlign="end center" >
+        <div class="text-area"  fxLayout="column" fxFlexFill fxLayoutAlign="center center" >
+          <p class="title" textWrap="true">Step 3:</p>
+          <p class="description" flex textWrap="false">Connect to sensor</p>
+          <button mat-flat-button class="c-btn" (click)="onSensorConnect('usb')">
+            <mat-icon>bluetooth</mat-icon> Connect with USB
+          </button>
+          <button mat-flat-button class="c-btn" (click)="onSensorConnect('ble')">
+            <mat-icon>usb</mat-icon> Connect with Bluetooth
+          </button>
+        </div>
+        <img mat-card-image class="cardImg" src="/assets/connect-to-sensor.png" alt="Connect to Sensor" />
+      </div>
+    </div>
+  </ng-template>
 
   <div *ngIf="measureView=='measuring'"
        fxFlexFill fxLayout="column"
